@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-white p-4 rounded shadow-sm mb-4">
+  <span class="badge bg-primary">{{ ad.DirName }}</span> <span class="badge bg-secondary">{{ ad.CatName }}</span> <span class="badge bg-info text-dark">{{ ad.LevelName }}</span>
+  <h2 class="mt-2">{{ ad.Title }}</h2>
+  <p class="text-muted">{{ ad.Description }}</p>
+  <p>Исполнитель: <b>{{ ad.SellerLogin }}</b> | Срок: <b>{{ ad.Days }} дн.</b> | Осталось мест: <b>{{ ad.Slots }}</b></p>
+  <h4 class="text-success mb-3">Цена: {{ "%.0f"|format(ad.Price) }} ₽</h4>
+  {% if user %}
+    <form method="post" class="row g-2">
+      <div class="col-md-8"><input type="text" name="comment" class="form-control" placeholder="Опишите ваше техническое задание..." required></div>
+      <div class="col-md-4"><button class="btn btn-success w-100">Заказать (безопасная сделка)</button></div>
+    </form>
+  {% else %}
+    <a href="{{ url_for('login') }}" class="btn btn-primary">Войдите, чтобы заказать</a>
+  {% endif %}
+</div>
+<h5>Отзывы ({{ reviews|length }})</h5>
+{% for r in reviews %}
+  <div class="bg-white p-3 rounded shadow-sm mb-2">
+    <b>{{ r.Login }}</b> — Оценка: <span class="badge bg-warning text-dark">{{ r.Rating }}/5</span>
+    <p class="mb-0 mt-1">{{ r.Comment }}</p>
+  </div>
+{% else %}
+  <p class="text-muted">Отзывов пока нет.</p>
+{% endfor %}
+{% endblock %}

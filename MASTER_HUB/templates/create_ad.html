@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="col-md-7 mx-auto bg-white p-4 rounded shadow-sm">
+  <h3 class="mb-3">Разместить новую услугу</h3>
+  <form method="post">
+    <div class="mb-2"><label class="form-label">Название услуги</label><input type="text" name="title" class="form-control" required></div>
+    <div class="mb-2"><label class="form-label">Описание</label><textarea name="description" class="form-control" rows="3" required></textarea></div>
+    <div class="row g-2 mb-2">
+      <div class="col-md-4"><label class="form-label">Направление</label>
+        <select name="dir_id" class="form-select">{% for d in directions %}<option value="{{ d.DirID }}">{{ d.DirName }}</option>{% endfor %}</select>
+      </div>
+      <div class="col-md-4"><label class="form-label">Категория</label>
+        <select name="cat_id" class="form-select">{% for c in categories %}<option value="{{ c.CatID }}">{{ c.CatName }}</option>{% endfor %}</select>
+      </div>
+      <div class="col-md-4"><label class="form-label">Уровень</label>
+        <select name="level_id" class="form-select">{% for l in levels %}<option value="{{ l.LevelID }}">{{ l.LevelName }}</option>{% endfor %}</select>
+      </div>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-md-4"><label class="form-label">Цена (₽)</label><input type="number" name="price" value="2000" min="100" class="form-control" required></div>
+      <div class="col-md-4"><label class="form-label">Мест (слотов)</label><input type="number" name="slots" value="3" min="1" class="form-control" required></div>
+      <div class="col-md-4"><label class="form-label">Срок (дней)</label><input type="number" name="days" value="3" min="1" class="form-control" required></div>
+    </div>
+    <button class="btn btn-success w-100">Опубликовать</button>
+  </form>
+</div>
+{% endblock %}

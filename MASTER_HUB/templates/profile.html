@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-4">
+  <div class="col-md-6 bg-white p-3 rounded shadow-sm">
+    <h5>Профиль: {{ user.login }} ({{ user.email }})</h5>
+    <p class="fs-5 mb-2">Текущий баланс: <b class="text-success">{{ "%.0f"|format(user.balance) }} ₽</b></p>
+    <form action="{{ url_for('topup') }}" method="post" class="d-flex gap-2">
+      <input type="number" name="amount" min="100" max="100000" value="5000" class="form-control" required>
+      <button class="btn btn-success">Пополнить демо-баланс</button>
+    </form>
+  </div>
+</div>
+
+<h4>Мои заказы (как заказчик)</h4>
+<table class="table table-bordered bg-white shadow-sm mb-4">
+  <tr><th>Услуга</th><th>Исполнитель</th><th>Сумма</th><th>ТЗ</th><th>Статус</th><th>Действие</th></tr>
+  {% for o in my_purchases %}
+  <tr>
+    <td>{{ o.Title }}</td><td>{{ o.SellerLogin }}</td><td>{{ "%.0f"|format(o.TotalAmount) }} ₽</td><td>{{ o.Comment }}</td>
+    <td><span class="badge bg-secondary">{{ o.StatusName }}</span></td>
+    <td>
+      {% if o.StatusID == 1 %}
+        <form action="{{ url_for('cancel_order', order_id=o.OrderID) }}" method="post"><button class="btn btn-danger btn-sm">Отменить</button></form>
+      {% elif o.StatusID == 2 and o.HasReview == 0 %}
+        <form action="{{ url_for('add_review', order_id=o.OrderID) }}" method="post" class="d-flex gap-1">
+          <select name="rating" class="form-select form-select-sm" style="width:70px"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select>
+          <input type="text" name="comment" class="form-control form-control-sm" placeholder="Отзыв" required>
+          <button class="btn btn-primary btn-sm">ОК</button>
+        </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h4>Заказы мне (как исполнителю)</h4>
+<table class="table table-bordered bg-white shadow-sm mb-4">
+  <tr><th>Услуга</th><th>Заказчик</th><th>Сумма</th><th>ТЗ</th><th>Статус</th><th>Действие</th></tr>
+  {% for s in my_sales %}
+  <tr>
+    <td>{{ s.Title }}</td><td>{{ s.BuyerLogin }}</td><td>{{ "%.0f"|format(s.TotalAmount) }} ₽</td><td>{{ s.Comment }}</td>
+    <td><span class="badge bg-secondary">{{ s.StatusName }}</span></td>
+    <td>
+      {% if s.StatusID == 1 %}
+        <form action="{{ url_for('complete_order', order_id=s.OrderID) }}" method="post" class="d-inline"><button class="btn btn-success btn-sm">Сдать работу</button></form>
+        <form action="{{ url_for('cancel_order', order_id=s.OrderID) }}" method="post" class="d-inline"><button class="btn btn-outline-danger btn-sm">Отменить</button></form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h4>История операций</h4>
+<table class="table table-sm bg-white shadow-sm">
+  <tr><th>Операция</th><th>Сумма</th><th>Дата</th></tr>
+  {% for t in txs %}<tr><td>{{ t.TxType }}</td><td>{{ "%.0f"|format(t.Amount) }} ₽</td><td>{{ t.TxDate }}</td></tr>{% endfor %}
+</table>
+{% endblock %}

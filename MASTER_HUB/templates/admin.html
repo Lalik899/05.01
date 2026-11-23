@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Панель администратора</h3>
+<h5 class="mt-3">Пользователи</h5>
+<table class="table table-bordered bg-white shadow-sm">
+  <tr><th>ID</th><th>Логин</th><th>Роль</th><th>Баланс</th><th>Статус</th><th>Действие</th></tr>
+  {% for u in users %}
+  <tr>
+    <td>{{ u.UserID }}</td><td>{{ u.Login }}</td><td>{{ u.RoleName }}</td><td>{{ "%.0f"|format(u.Balance) }} ₽</td>
+    <td>{{ "Заблокирован" if u.IsBlocked else "Активен" }}</td>
+    <td>
+      <form method="post"><input type="hidden" name="action" value="toggle_block"><input type="hidden" name="user_id" value="{{ u.UserID }}">
+        <button class="btn btn-warning btn-sm">Блок / Разблок</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<h5 class="mt-4">Объявления</h5>
+<table class="table table-bordered bg-white shadow-sm">
+  <tr><th>ID</th><th>Название</th><th>Исполнитель</th><th>Цена</th><th>Статус</th><th>Действие</th></tr>
+  {% for a in ads %}
+  <tr>
+    <td>{{ a.AdID }}</td><td>{{ a.Title }}</td><td>{{ a.Login }}</td><td>{{ "%.0f"|format(a.Price) }} ₽</td><td>{{ a.StatusName }}</td>
+    <td>
+      <form method="post"><input type="hidden" name="action" value="hide_ad"><input type="hidden" name="ad_id" value="{{ a.AdID }}">
+        <button class="btn btn-danger btn-sm">Снять с публикации</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
